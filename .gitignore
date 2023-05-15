@@ -160,6 +160,5 @@ cython_debug/
 #.idea/
 
 .DS_Store
-.json
 .txt
 .ipynb
