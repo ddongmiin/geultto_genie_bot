@@ -51,10 +51,10 @@
 ## 폴더 트리
 ├── README.md
 ├── bigquery.py
-├── slack.py
 ├── main.py
 ├── requirements.txt
 ├── schema
 │   ├── channels.json
 │   ├── slack_conversation.json
 │   └── users.json
+└── slack.py
