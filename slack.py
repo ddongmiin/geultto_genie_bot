@@ -246,6 +246,22 @@ class SlackMessageRetriever:
         return date_list
 
     def fetch_and_process_posts(self, channel_id: str, posts: List[Dict]) -> List[Dict]:
+        """
+        포스트와 포스트에 해당하는 쓰레드들을 List[Dict] 형태로 변환하여
+        message_list를 만듭니다.
+
+        Parameters
+        ----------
+        channel_id : str
+            채널ID
+        posts : List[Dict]
+            게시글
+
+        Returns
+        -------
+        List[Dict]
+            게시글과 쓰레드
+        """
         message_list = []
         for post in posts:
             message_list.append(
@@ -267,6 +283,22 @@ class SlackMessageRetriever:
 
     @staticmethod
     def convert_message_to_dataframe(message_list: List[Dict]) -> pd.DataFrame:
+        """
+        message_list를 판다스 데이터프레임으로 변환합니다.
+        변환 후, datetime64[ns] 형태로 tddate와 createtime의 컬럼 타입을 변경해줍니다.
+        아래 문서의 4.2절에서 추론 타입을 확인할 수 있습니다.
+        https://pandas-gbq.readthedocs.io/_/downloads/en/latest/pdf/
+
+        Parameters
+        ----------
+        message_list : List[Dict]
+            메시지 리스트(게시글과 쓰레드)
+
+        Returns
+        -------
+        pd.DataFrame
+            메시지 리스트를 판다스 데이터프레임으로
+        """
         message_df = pd.DataFrame(message_list)
         if message_df.empty:
             return None
