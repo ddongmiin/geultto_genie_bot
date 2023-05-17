@@ -49,6 +49,8 @@
 | reactions    | STRING       | 이모지이름/이모지체크유저id/체크수          |
 
 ## 폴더 트리
+```Bash
+.
 ├── README.md
 ├── bigquery.py
 ├── main.py
@@ -58,3 +60,4 @@
 │   ├── slack_conversation.json
 │   └── users.json
 └── slack.py
+```
