@@ -1,4 +1,6 @@
 # Genie Season2
+- [우당탕탕 슬랙 메시지 저장기(1) - 슬랙 메시지 넌 누구냐?](https://gibles-deepmind.tistory.com/entry/%EC%9A%B0%EB%8B%B9%ED%83%95%ED%83%95-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%A0%80%EC%9E%A5%EA%B8%B01-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EB%84%8C-%EB%88%84%EA%B5%AC%EB%83%90)
+- [우당탕탕 슬랙 메시지 저장기(2) - 게시글과 쓰레드 조회하기](https://gibles-deepmind.tistory.com/entry/%EC%9A%B0%EB%8B%B9%ED%83%95%ED%83%95-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%A0%80%EC%9E%A5%EA%B8%B02-%EA%B2%8C%EC%8B%9C%EA%B8%80%EA%B3%BC-%EC%93%B0%EB%A0%88%EB%93%9C-%EC%A1%B0%ED%9A%8C%ED%95%98%EA%B8%B0)
 ## 시작 계기
 - [Genie Season1](https://github.com/geultto/genie)
     - 글 제출 / 패스권 / 상호피드백 체킹에 활용
