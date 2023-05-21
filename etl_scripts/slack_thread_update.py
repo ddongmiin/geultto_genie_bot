@@ -1,8 +1,12 @@
+"""
+아직 기능 추가중입니다. 
+"""
+
 import sys
 import time
 from datetime import datetime
 
-# 모듈 참조 경로 추가, 수정중
+# 모듈 참조 경로 추가
 sys.path.append("/Users/cho/git/geultto_genie_bot")
 
 from module.bigquery import BigqueryProcessor
