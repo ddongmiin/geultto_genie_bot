@@ -47,17 +47,3 @@
 | tddate    | DATE       | 게시글, 포스트 작성일자(파티션키)          |
 | text    | STRING       | 게시글, 포스트 텍스트          |
 | reactions    | STRING       | 이모지이름/이모지체크유저id/체크수          |
-
-## 폴더 트리
-```Bash
-.
-├── README.md
-├── bigquery.py
-├── main.py
-├── requirements.txt
-├── schema
-│   ├── channels.json
-│   ├── slack_conversation.json
-│   └── users.json
-└── slack.py
-```
