@@ -66,7 +66,7 @@ class SlackMessageRetriever:
             list dict 형태로 출력됩니다.
             0번째 인덱스는 게시글이므로 제외합니다.
         """
-        thread = self.app.client.conversations_replies(channel=channel_id, ts=thread_ts, limit=1000)
+        thread = self.app.client.conversations_replies(channel=channel_id, ts=thread_ts)
         return thread["messages"]
 
     def read_users_from_slack(self) -> List[Dict]:
