@@ -234,7 +234,13 @@ class SlackMessageRetriever:
             "num_member": int(channel["num_members"]),
         }
 
-    def fetch_and_process_posts(self, channel_id: str, posts: List[Dict]) -> List[Dict]:
+    def fetch_and_process_posts(
+        self,
+        channel_id: str,
+        posts: List[Dict],
+        start_unixtime: float = None,
+        end_unixtime: float = None,
+    ) -> List[Dict]:
         """
         포스트와 포스트에 해당하는 쓰레드들을 List[Dict] 형태로 변환하여
         message_list를 만듭니다.
@@ -261,7 +267,11 @@ class SlackMessageRetriever:
                     thread_ts = post["thread_ts"]
                     # 0번째 값은 게시글
                     threads = SlackMessageRetriever.read_thread_from_slack(
-                        self, channel_id=channel_id, thread_ts=thread_ts
+                        self,
+                        channel_id=channel_id,
+                        thread_ts=thread_ts,
+                        start_unixtime=start_unixtime,
+                        end_unixtime=end_unixtime,
                     )[1:]
                     for thread in threads:
                         message_list.append(
