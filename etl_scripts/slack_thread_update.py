@@ -62,35 +62,35 @@ for channel_id in channel_id_list:
         except Exception as e:
             print(e, thread_ts)
 
-    # temp_df = SlackMessageRetriever.convert_message_to_dataframe(message_list=thread_list)
-    # print(type(temp_df))
-    # if temp_df is not None:
-    #     bigquery_client.update_table(
-    #         df=temp_df,
-    #         table_name="temp_upsert_table",
-    #         if_exists="replace",
-    #         schema=schema_conversation,
-    #     )
-    #     print(4)
+    temp_df = SlackMessageRetriever.convert_message_to_dataframe(message_list=thread_list)
+    print(type(temp_df))
+    if temp_df is not None:
+        bigquery_client.update_table(
+            df=temp_df,
+            table_name="temp_upsert_table",
+            if_exists="replace",
+            schema=schema_conversation,
+        )
+        print(4)
 
-    #     bigquery_client.upsert_table(
-    #         target_table="upsert_test",
-    #         source_table="temp_upsert_table",
-    #         tddate=sdate,
-    #         condition_clause="""
-    #         ON T.post_id = S.post_id
-    #         WHEN MATCHED THEN
-    #         UPDATE SET
-    #             channel_id = S.channel_id,
-    #             message_type = S.message_type,
-    #             user_id = S.user_id,
-    #             createtime = S.createtime,
-    #             tddate = S.tddate,
-    #             text = S.text,
-    #             reactions = S.reactions
-    #         WHEN NOT MATCHED THEN
-    #         INSERT (channel_id, message_type, post_id, user_id, createtime, tddate, text, reactions)
-    #         VALUES (channel_id, message_type, post_id, user_id, createtime, tddate, text, reactions)
-    #         """,
-    #     )
-    # print(f"{channel_id}의 업데이트가 완료됐습니다.")
+        bigquery_client.upsert_table(
+            target_table="upsert_test",
+            source_table="temp_upsert_table",
+            tddate=sdate,
+            condition_clause="""
+            ON T.post_id = S.post_id
+            WHEN MATCHED THEN
+            UPDATE SET
+                channel_id = S.channel_id,
+                message_type = S.message_type,
+                user_id = S.user_id,
+                createtime = S.createtime,
+                tddate = S.tddate,
+                text = S.text,
+                reactions = S.reactions
+            WHEN NOT MATCHED THEN
+            INSERT (channel_id, message_type, post_id, user_id, createtime, tddate, text, reactions)
+            VALUES (channel_id, message_type, post_id, user_id, createtime, tddate, text, reactions)
+            """,
+        )
+    print(f"{channel_id}의 업데이트가 완료됐습니다.")
