@@ -51,6 +51,8 @@ channel_id_list = channel_df["channel_id"].tolist()
 start_date = sys.argv[1]
 end_date = sys.argv[2]
 d_range = get_daily_datelist(start_date=start_date, end_date=end_date)
+begin_unixtime = time.mktime((d_range[0] + relativedelta(days=-1)).timetuple())
+last_unixtime = time.mktime((d_range[-1]).timetuple())
 
 for sdatetime in d_range:
     sdatetime_minus1 = sdatetime + relativedelta(days=-1)
@@ -67,7 +69,12 @@ for sdatetime in d_range:
             start_unixtime=start_unixtime,
             end_unixtime=end_unixtime,
         )
-        message_list = slack_app.fetch_and_process_posts(channel_id=channel_id, posts=posts)
+        message_list = slack_app.fetch_and_process_posts(
+            channel_id=channel_id,
+            posts=posts,
+            start_unixtime=begin_unixtime,
+            end_unixtime=last_unixtime,
+        )
         all_message_list.extend(message_list)
         time.sleep(1.5)
     message_df = slack_app.convert_message_to_dataframe(message_list=all_message_list)
