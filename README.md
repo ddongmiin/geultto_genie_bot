@@ -39,7 +39,7 @@
 | num_member    | INTEGER       | 채널 인원수          |
 
 
-`slack_conversation`
+`slack_conversation_no_partition`
 
 | 필드 이름| 유형 | 의미 |
 | :----------: | :---------: | :----------: |
