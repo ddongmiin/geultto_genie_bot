@@ -262,7 +262,7 @@ class SlackMessageRetriever:
                 threads = self.read_thread_from_slack(channel_id=channel_id, thread_ts=thread_ts)[
                     1:
                 ]
-                time.sleep(1)
+                time.sleep(1.5)
                 for thread in threads:
                     message_list.append(
                         SlackMessageRetriever.convert_thread_to_dict(

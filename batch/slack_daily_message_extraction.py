@@ -9,18 +9,15 @@ import pandas as pd
 
 from core.bigquery import BigqueryProcessor
 from core.slack import SlackMessageRetriever
-from core.date_utils import get_daily_datelist
 from core.config import config
 
 
 class MessageExtractor:
-    def __init__(self, start_date: str, end_date: str) -> None:
+    def __init__(self) -> None:
         self.bigquery_client = BigqueryProcessor(
             env_name="GOOGLE_APPLICATION_CREDENTIALS", database_id="geultto_8th"
         )
         self.slack_app = SlackMessageRetriever(env_name="SLACK_TOKEN")
-        self.start_date = start_date
-        self.end_date = end_date
 
     def update_users(self, table_name: str = "users", if_exists: str = "replace") -> None:
         users = self.slack_app.read_users_from_slack()
@@ -48,24 +45,24 @@ class MessageExtractor:
             schema=config.SCHEMA_CHANNELS,
         )
 
-    def get_conversations_list(self) -> List[Dict]:
-        for sdatetime in get_daily_datelist(start_date=self.start_date, end_date=self.end_date):
-            sdatetime_minus1 = sdatetime + relativedelta(days=-1)
-            start_unixtime = time.mktime((sdatetime_minus1).timetuple())
-            end_unixtime = time.mktime(sdatetime.timetuple()) - 1e-6  # 23:59:59 99999 까지
+    def get_conversations_list(self, sdatetime: datetime) -> List[Dict]:
+        sdatetime_minus1 = sdatetime + relativedelta(days=-1)
+        start_unixtime = time.mktime((sdatetime_minus1).timetuple())
+        end_unixtime = time.mktime(sdatetime.timetuple()) - 1e-6  # 23:59:59 99999 까지
 
-            channel_id_list = (
-                self.bigquery_client.read_table(table_name="channels").loc[:, "channel_id"].tolist()
+        channel_id_list = (
+            self.bigquery_client.read_table(table_name="channels").loc[:, "channel_id"].tolist()
+        )
+        message_list = []
+        for channel_id in channel_id_list:
+            posts = self.slack_app.read_post_from_slack(
+                start_unixtime=start_unixtime, end_unixtime=end_unixtime, channel_id=channel_id
             )
-            message_list = []
-            for channel_id in channel_id_list:
-                posts = self.slack_app.read_post_from_slack(
-                    start_unixtime=start_unixtime, end_unixtime=end_unixtime, channel_id=channel_id
-                )
-                message_list.extend(
-                    self.slack_app.fetch_and_process_posts(channel_id=channel_id, posts=posts)
-                )
-            print(sdatetime_minus1)
+            message_list.extend(
+                self.slack_app.fetch_and_process_posts(channel_id=channel_id, posts=posts)
+            )
+            time.sleep(1)
+        print(sdatetime_minus1)
         return message_list
 
     def update_conversations(self, message_list: List[Dict]):
