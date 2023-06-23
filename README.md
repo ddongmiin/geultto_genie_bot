@@ -1,5 +1,6 @@
 # 글또콘 발표
-<img src="./img/community_img.png", height="300px", width="400px">
+![글또콘 발표](./img/community_img.png)
+
 * [발표자료링크](https://drive.google.com/file/d/1Uj7lmV9s28Lf6bZ2xzknMro_rx2NUeCL/view?usp=sharing)
 * 주요 내용은 아래 두 가지입니다.
     * 글또 슬랙 데이터를 수집한 경험
