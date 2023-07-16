@@ -1,7 +1,7 @@
 [Table of Contents](#toc)
 1. [8기 데이터 기반 시상식 진행](#8기-데이터-기반-시상식-진행)
 2. [글또콘 발표](#글또콘-발표)
-3. [슬랙데이터수집 파이프라인 & 스키마](#Genie-Season2)
+3. [슬랙데이터수집 파이프라인 & 스키마](#슬랙데이터-수집-파이프라인-&-스키마)
 ----
 # 8기 데이터 기반 시상식 진행
 * 저장했던 슬랙 데이터를 기반으로 커뮤니티 내에서 소소한 시상식을 진행했습니다. 자세한 내용은 정현님께서 남겨주신 페이지를 참고해주세요. [글또8기결산](https://lunadata.oopy.io/3141280d-3e04-40e8-8f32-833488fe70b2)
@@ -48,7 +48,7 @@
     └── users.json
 ```
 -------
-# Genie Season2
+# 슬랙데이터 수집 파이프라인 & 스키마
 - 개인 블로그에서 관련된 내용을 상세하게 확인하실 수 있습니다.
 - [우당탕탕 슬랙 메시지 저장기(1) - 슬랙 메시지 넌 누구냐?](https://gibles-deepmind.tistory.com/entry/%EC%9A%B0%EB%8B%B9%ED%83%95%ED%83%95-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%A0%80%EC%9E%A5%EA%B8%B01-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EB%84%8C-%EB%88%84%EA%B5%AC%EB%83%90)
 - [우당탕탕 슬랙 메시지 저장기(2) - 게시글과 쓰레드 조회하기](https://gibles-deepmind.tistory.com/entry/%EC%9A%B0%EB%8B%B9%ED%83%95%ED%83%95-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%A0%80%EC%9E%A5%EA%B8%B02-%EA%B2%8C%EC%8B%9C%EA%B8%80%EA%B3%BC-%EC%93%B0%EB%A0%88%EB%93%9C-%EC%A1%B0%ED%9A%8C%ED%95%98%EA%B8%B0)
