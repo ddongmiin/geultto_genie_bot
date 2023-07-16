@@ -1,6 +1,14 @@
+[Table of Contents](#toc)
+1. [8기 데이터 기반 시상식 진행](#1-8기-데이터-기반-시상식-진행)
+2. [글또콘 발표](#2-글또콘-발표)
+3. [슬랙데이터수집 파이프라인 & 스키마](#-Genie-Season2)
+----
+# 8기 데이터 기반 시상식 진행
+* 저장했던 슬랙 데이터를 기반으로 커뮤니티 내에서 소소한 시상식을 진행했습니다. 자세한 내용은 정현님께서 남겨주신 페이지를 참고해주세요. [글또8기결산](https://lunadata.oopy.io/3141280d-3e04-40e8-8f32-833488fe70b2)
+----------
 # 글또콘 발표
 ![글또콘 발표](./img/community_img.png)
-
+![글또콘 발표](./img/geultto_summary.png)
 * [발표자료링크](https://drive.google.com/file/d/1Uj7lmV9s28Lf6bZ2xzknMro_rx2NUeCL/view?usp=sharing)
 * 주요 내용은 아래 두 가지입니다.
     * 글또 슬랙 데이터를 수집한 경험
@@ -39,7 +47,7 @@
     ├── slack_conversation.json
     └── users.json
 ```
-
+-------
 # Genie Season2
 - 개인 블로그에서 관련된 내용을 상세하게 확인하실 수 있습니다.
 - [우당탕탕 슬랙 메시지 저장기(1) - 슬랙 메시지 넌 누구냐?](https://gibles-deepmind.tistory.com/entry/%EC%9A%B0%EB%8B%B9%ED%83%95%ED%83%95-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%A0%80%EC%9E%A5%EA%B8%B01-%EC%8A%AC%EB%9E%99-%EB%A9%94%EC%8B%9C%EC%A7%80-%EB%84%8C-%EB%88%84%EA%B5%AC%EB%83%90)
@@ -63,6 +71,7 @@
     3. 수집할 일자 설정
     4. 채널 별로 게시글 / 쓰레드 / 이모지 전처리
     5. 빅쿼리 저장
+-------
 ## 스키마
 `users`
 
