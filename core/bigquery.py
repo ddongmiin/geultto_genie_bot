@@ -21,10 +21,16 @@ class BigqueryProcessor:
         )
         self.project_id = self.credentials.project_id
         self.database_id = database_id
-        self.client = bigquery.Client(credentials=self.credentials, project=self.project_id)
+        self.client = bigquery.Client(
+            credentials=self.credentials, project=self.project_id
+        )
 
     def create_table(
-        self, table_name: str, schema: List, partition: bool = False, partition_key: str = None
+        self,
+        table_name: str,
+        schema: List,
+        partition: bool = False,
+        partition_key: str = None,
     ) -> None:
         """
         파이썬에서 빅쿼리 테이블을 생성합니다.
@@ -135,7 +141,7 @@ class BigqueryProcessor:
     def upsert_table(
         self,
         *,
-        target_table: str = "slack_conversation_no_partition",
+        target_table: str = "slack_conversation_master",
         source_table: str = "temp_upsert_table",
     ) -> None:
         """
