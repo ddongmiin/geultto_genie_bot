@@ -119,9 +119,12 @@ class SlackMessageRetriever:
         return {
             "channel_id": channel_id,
             "message_type": "post",
+            "client_msg_id": post["client_msg_id"],
             "post_id": post["user"]
             + "-"
-            + datetime.fromtimestamp(float(post["ts"])).strftime("%Y-%m-%d-%H-%M-%S-%f"),
+            + datetime.fromtimestamp(float(post["ts"])).strftime(
+                "%Y-%m-%d-%H-%M-%S-%f"
+            ),
             "user_id": post["user"],
             "createtime": datetime.fromtimestamp(float(post["ts"])).strftime(
                 "%Y-%m-%dT%H:%M:%S.%f"
@@ -166,9 +169,12 @@ class SlackMessageRetriever:
         return {
             "channel_id": channel_id,
             "message_type": "thread",
+            "client_msg_id": thread["client_msg_id"],
             "post_id": parent_user_id
             + "-"
-            + datetime.fromtimestamp(float(thread["thread_ts"])).strftime("%Y-%m-%d-%H-%M-%S-%f"),
+            + datetime.fromtimestamp(float(thread["thread_ts"])).strftime(
+                "%Y-%m-%d-%H-%M-%S-%f"
+            ),
             "user_id": thread["user"],
             "createtime": datetime.fromtimestamp(float(thread["ts"])).strftime(
                 "%Y-%m-%dT%H:%M:%S.%f"
@@ -254,14 +260,16 @@ class SlackMessageRetriever:
         message_list = []
         for post in posts:
             message_list.append(
-                SlackMessageRetriever.convert_post_to_dict(channel_id=channel_id, post=post)
+                SlackMessageRetriever.convert_post_to_dict(
+                    channel_id=channel_id, post=post
+                )
             )
             if "subtype" not in list(post.keys()) and "thread_ts" in list(post.keys()):
                 thread_ts = post["thread_ts"]
                 # 0번째 값은 게시글
-                threads = self.read_thread_from_slack(channel_id=channel_id, thread_ts=thread_ts)[
-                    1:
-                ]
+                threads = self.read_thread_from_slack(
+                    channel_id=channel_id, thread_ts=thread_ts
+                )[1:]
                 time.sleep(1.5)
                 for thread in threads:
                     message_list.append(
