@@ -15,11 +15,13 @@ from core.config import config
 class MessageExtractor:
     def __init__(self) -> None:
         self.bigquery_client = BigqueryProcessor(
-            env_name="GOOGLE_APPLICATION_CREDENTIALS", database_id="geultto_8th"
+            env_name="GOOGLE_APPLICATION_CREDENTIALS", database_id="geultto_9th"
         )
         self.slack_app = SlackMessageRetriever(env_name="SLACK_TOKEN")
 
-    def update_users(self, table_name: str = "users", if_exists: str = "replace") -> None:
+    def update_users(
+        self, table_name: str = "users", if_exists: str = "replace"
+    ) -> None:
         users = self.slack_app.read_users_from_slack()
         user_list = []
         for user in users:
@@ -32,11 +34,15 @@ class MessageExtractor:
             schema=config.SCHEMA_USERS,
         )
 
-    def update_channels(self, table_name: str = "channels", if_exists: str = "replace") -> None:
+    def update_channels(
+        self, table_name: str = "channels", if_exists: str = "replace"
+    ) -> None:
         channels = self.slack_app.read_channels_from_slack()
         channel_list = []
         for channel in channels:
-            channel_list.append(SlackMessageRetriever.convert_channels_to_dict(channel=channel))
+            channel_list.append(
+                SlackMessageRetriever.convert_channels_to_dict(channel=channel)
+            )
         channel_df = pd.DataFrame(channel_list)
         self.bigquery_client.update_table(
             df=channel_df,
@@ -51,15 +57,21 @@ class MessageExtractor:
         end_unixtime = time.mktime(sdatetime.timetuple()) - 1e-6  # 23:59:59 99999 까지
 
         channel_id_list = (
-            self.bigquery_client.read_table(table_name="channels").loc[:, "channel_id"].tolist()
+            self.bigquery_client.read_table(table_name="channels")
+            .loc[:, "channel_id"]
+            .tolist()
         )
         message_list = []
         for channel_id in channel_id_list:
             posts = self.slack_app.read_post_from_slack(
-                start_unixtime=start_unixtime, end_unixtime=end_unixtime, channel_id=channel_id
+                start_unixtime=start_unixtime,
+                end_unixtime=end_unixtime,
+                channel_id=channel_id,
             )
             message_list.extend(
-                self.slack_app.fetch_and_process_posts(channel_id=channel_id, posts=posts)
+                self.slack_app.fetch_and_process_posts(
+                    channel_id=channel_id, posts=posts
+                )
             )
             time.sleep(1)
         print(sdatetime_minus1)
