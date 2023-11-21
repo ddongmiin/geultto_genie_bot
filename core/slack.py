@@ -119,7 +119,6 @@ class SlackMessageRetriever:
         return {
             "channel_id": channel_id,
             "message_type": "post",
-            "client_msg_id": post["client_msg_id"],
             "post_id": post["user"]
             + "-"
             + datetime.fromtimestamp(float(post["ts"])).strftime(
@@ -169,7 +168,6 @@ class SlackMessageRetriever:
         return {
             "channel_id": channel_id,
             "message_type": "thread",
-            "client_msg_id": thread["client_msg_id"],
             "post_id": parent_user_id
             + "-"
             + datetime.fromtimestamp(float(thread["thread_ts"])).strftime(
