@@ -11,6 +11,11 @@
     },
     {
         "mode": "REQUIRED",
+        "name": "client_msg_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "REQUIRED",
         "name": "post_id",
         "type": "STRING"
     },    
