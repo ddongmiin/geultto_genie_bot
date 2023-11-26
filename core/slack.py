@@ -88,7 +88,9 @@ class SlackMessageRetriever:
         """
         return self.app.client.users_list()["members"]
 
-    def read_channels_from_slack(self) -> List[Dict]:
+    def read_channels_from_slack(
+        self,
+    ) -> List[Dict]:
         """
         채널 리스트를 불러옵니다.
 
@@ -98,6 +100,31 @@ class SlackMessageRetriever:
             list dict 형태로 채널 리스트를 확인할 수 있습니다.
         """
         return self.app.client.conversations_list()["channels"]
+
+    def message_for_private(self, users: List, text: str) -> None:
+        """
+        _summary_
+
+        Returns
+        -------
+        None
+            채널로 메시지를 보냅니다.
+        """
+        messaged_users = []
+        for user in users:
+            try:
+                dm_channel_id = self.app.client.conversations_open(users=user)[
+                    "channel"
+                ]["id"]
+                self.app.client.chat_postMessage(channel=dm_channel_id, text=text)
+            except:
+                time.sleep(5)
+                dm_channel_id = self.app.client.conversations_open(users=user)[
+                    "channel"
+                ]["id"]
+                self.app.client.chat_postMessage(channel=dm_channel_id, text=text)
+            messaged_users.append(f"{user}")
+        print(messaged_users)
 
     @staticmethod
     def convert_post_to_dict(channel_id: str, post: Dict) -> Dict:
