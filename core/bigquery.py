@@ -59,6 +59,16 @@ class BigqueryProcessor:
         self.client.create_table(table)
         print(f"{table_path}가 정상적으로 생성 됐습니다.")
 
+    def run_query_to_dataframe(self, query: str) -> pd.DataFrame:
+        """
+        빅쿼리에 직접 쿼리를 날립니다
+
+        Parameters
+        ----------
+
+        """
+        return self.client.query(query=query).result().to_dataframe()
+
     def read_table(self, table_name: str, where_clause: str = None) -> pd.DataFrame:
         """
         빅쿼리 테이블을 판다스로 읽어옵니다.
