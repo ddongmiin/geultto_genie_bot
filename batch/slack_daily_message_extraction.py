@@ -1,8 +1,6 @@
-import sys
-import os
 import time
 from typing import List, Dict
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 import pandas as pd
@@ -13,11 +11,11 @@ from core.config import config
 
 
 class MessageExtractor:
-    def __init__(self) -> None:
+    def __init__(self, token_type: str) -> None:
         self.bigquery_client = BigqueryProcessor(
             env_name="GOOGLE_APPLICATION_CREDENTIALS", database_id="geultto_9th"
         )
-        self.slack_app = SlackMessageRetriever(env_name="SLACK_TOKEN")
+        self.slack_app = SlackMessageRetriever(env_name=token_type)
 
     def update_users(
         self, table_name: str = "users", if_exists: str = "replace"
