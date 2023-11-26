@@ -6,7 +6,7 @@ if __name__ == "__main__":
     start_date = sys.argv[1]
     end_date = sys.argv[2]
     print(f"{start_date} ~ {end_date} 데이터 처리를 시작합니다.")
-    message_client = MessageExtractor()
+    message_client = MessageExtractor(token_type="SLACK_TOKEN_USER")
     message_client.update_users()
     message_client.update_channels()
 
