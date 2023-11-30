@@ -1,14 +1,14 @@
 [Table of Contents](#toc)
 1. [8기 데이터 기반 시상식 진행](#8기-데이터-기반-시상식-진행)
-2. [글또콘 발표](#글또콘-발표)
+2. [데이터반상회 발표](#데이터반상회-발표)
 3. [슬랙데이터수집 파이프라인 & 스키마](#슬랙데이터-수집-파이프라인-스키마)
 ----
 # 8기 데이터 기반 시상식 진행
 * 저장했던 슬랙 데이터를 기반으로 커뮤니티 내에서 소소한 시상식을 진행했습니다. 자세한 내용은 정현님께서 남겨주신 페이지를 참고해주세요. [글또8기결산](https://lunadata.oopy.io/3141280d-3e04-40e8-8f32-833488fe70b2)
 ----------
-# 글또콘 발표
-![글또콘 발표](./img/community_img.png)
-![글또콘 발표](./img/geultto_summary.png)
+# 데이터반상회 발표
+![데이터반상회 발표](./img/community_img.png)
+![데이터반상회 발표](./img/geultto_summary.png)
 * [발표자료링크](https://drive.google.com/file/d/1Uj7lmV9s28Lf6bZ2xzknMro_rx2NUeCL/view?usp=sharing)
 * 주요 내용은 아래 두 가지입니다.
     * 글또 슬랙 데이터를 수집한 경험
