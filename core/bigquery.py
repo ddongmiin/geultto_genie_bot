@@ -151,8 +151,8 @@ class BigqueryProcessor:
     def upsert_table(
         self,
         *,
-        target_table: str = "slack_conversation_master",
-        source_table: str = "temp_upsert_table",
+        target_table: str,
+        source_table: str,
     ) -> None:
         """
         아래와 같이 값이 존재하는 경우 update, 값이 없는 경우 insert하는 로직을 진행
