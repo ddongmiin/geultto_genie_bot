@@ -5,10 +5,44 @@ from datetime import datetime
 import ssl
 import certifi
 import time
+from functools import wraps
 
 import pandas as pd
 from slack_sdk import WebClient
 from slack_bolt import App
+
+
+def retry(tries: int, delay: int, backoff: int):
+    """
+    재실행 데코레이터
+
+    Parameters
+    ----------
+    tries : int
+        최대 재시도 횟수
+    delay : int
+        재시도 사이의 대기시간(초)
+    backoff : int
+        재시도 시간을 점진적으로 증가시킴(초)
+    """
+
+    def deco_retry(f):
+        @wraps(f)
+        def f_retry(*args, **kwargs):
+            mtries, mdelay = tries, delay
+            while tries > 1:
+                try:
+                    return f(*args, **kwargs)
+                except Exception as e:
+                    print(f"{str(e)}, {mdelay}초 후 재실행 예정")
+                    time.sleep(mdelay)
+                    mtries -= 1
+                    mdelay *= backoff
+            return f(*args, **kwargs)
+
+        return f_retry
+
+    return deco_retry
 
 
 class SlackMessageRetriever:
@@ -50,6 +84,30 @@ class SlackMessageRetriever:
         )
         return response["messages"]
 
+    def read_permalink_from_slack(
+        self,
+        channel_id: str,
+        message_ts: str,
+    ) -> str:
+        """
+        슬랙의 게시글, 댓글 링크를 가져옵니다.
+
+        Parameters
+        ----------
+        channel_id : str
+            수집할 채널 명입니다.
+        message_ts : str
+            게시글 작성 시간(unixtime)을 넣어줘야 헤당 게시글의 링크를 확인할 수 있습니다.
+
+        Returns
+        -------
+        str
+            게시글 링크입니다.
+        """
+        return self.app.client.chat_getPermalink(
+            channel=channel_id, message_ts=message_ts
+        )
+
     def read_thread_from_slack(
         self,
         channel_id: str,
@@ -76,6 +134,29 @@ class SlackMessageRetriever:
             ts=thread_ts,
         )
         return thread["messages"]
+
+    def read_reactions_from_slack(self, channel_id: str, ts: str) -> List[Dict]:
+        """
+        슬랙 게시글/댓글의 이모지를 가져옵니다.
+
+        Parameters
+        ----------
+        channel_id : str
+            채널 Id입니다.
+        ts : str
+            이모지를 가져올 게시글/댓글의 Unixtime입니다.
+
+        Returns
+        -------
+        List[Dict]
+            이모지 이름, 유저, 카운트를 불러옵니다.
+        """
+
+        return self.app.client.reactions_get(
+            channel=channel_id,
+            timestamp=ts,
+            full=True,
+        )
 
     def read_users_from_slack(self) -> List[Dict]:
         """
@@ -126,8 +207,7 @@ class SlackMessageRetriever:
             messaged_users.append(f"{user}")
         print(messaged_users)
 
-    @staticmethod
-    def convert_post_to_dict(channel_id: str, post: Dict) -> Dict:
+    def convert_post_to_dict(self, channel_id: str, post: Dict) -> Dict:
         """
         post dict내에서 필요한 정보만 수집합니다.
 
@@ -137,12 +217,16 @@ class SlackMessageRetriever:
             채널명은 dict안에 없으므로 파라미터로 추가합니다.
         post : Dict
             dict 형태의 post입니다.
-
         Returns
         -------
         Dict
             채널id, 메시지타입(post), 게시글id, 유저id, 작성시간, 작성일자, 게시글, 리액션(종류, 사람, 숫자)을 수집합니다.
         """
+
+        reaction_dict = self.read_reactions_from_slack(
+            channel_id=channel_id, ts=post["ts"]
+        )
+
         return {
             "channel_id": channel_id,
             "message_type": "post",
@@ -152,26 +236,29 @@ class SlackMessageRetriever:
                 "%Y-%m-%d-%H-%M-%S-%f"
             ),
             "user_id": post["user"],
+            "ts": post["ts"],
             "createtime": datetime.fromtimestamp(float(post["ts"])).strftime(
                 "%Y-%m-%dT%H:%M:%S.%f"
             ),
             "tddate": datetime.fromtimestamp(float(post["ts"])).strftime("%Y-%m-%d"),
             "text": post["text"],
+            "permalink": self.read_permalink_from_slack(
+                channel_id=channel_id, message_ts=post["ts"]
+            ),
             "reactions": json.dumps(
                 [
                     {
-                        "name": react_dict["name"],
-                        "user_id": react_dict["users"],
-                        "count": react_dict["count"],
+                        "name": reaction_dict["name"],
+                        "user_id": reaction_dict["users"],
+                        "count": reaction_dict["count"],
                     }
-                    for react_dict in post.get("reactions", [])
+                    for reaction_dict in post.get("reactions", [])
                 ],
                 ensure_ascii=False,
             ),
         }
 
-    @staticmethod
-    def convert_thread_to_dict(channel_id: str, thread: Dict) -> Dict:
+    def convert_thread_to_dict(self, channel_id: str, thread: Dict) -> Dict:
         """
         thread dict내에서 필요한 정보만 수집합니다.
 
@@ -192,6 +279,11 @@ class SlackMessageRetriever:
             if "parent_user_id" in thread.keys()
             else thread["root"]["user"]
         )
+
+        reaction_dict = self.read_reactions_from_slack(
+            channel_id=channel_id, ts=thread["ts"]
+        )
+
         return {
             "channel_id": channel_id,
             "message_type": "thread",
@@ -201,19 +293,23 @@ class SlackMessageRetriever:
                 "%Y-%m-%d-%H-%M-%S-%f"
             ),
             "user_id": thread["user"],
+            "ts": thread["ts"],
             "createtime": datetime.fromtimestamp(float(thread["ts"])).strftime(
                 "%Y-%m-%dT%H:%M:%S.%f"
             ),
             "tddate": datetime.fromtimestamp(float(thread["ts"])).strftime("%Y-%m-%d"),
             "text": thread["text"],
+            "permalink": self.read_permalink_from_slack(
+                channel_id=channel_id, message_ts=thread["ts"]
+            ),
             "reactions": json.dumps(
                 [
                     {
-                        "name": react_dict["name"],
-                        "user_id": react_dict["users"],
-                        "count": react_dict["count"],
+                        "name": reaction_dict["name"],
+                        "user_id": reaction_dict["users"],
+                        "count": reaction_dict["count"],
                     }
-                    for react_dict in thread.get("reactions", [])
+                    for reaction_dict in thread.get("reactions", [])
                 ],
                 ensure_ascii=False,
             ),
@@ -261,6 +357,7 @@ class SlackMessageRetriever:
             "num_member": int(channel["num_members"]),
         }
 
+    @retry(tries=6, delay=10, backoff=10)
     def fetch_and_process_posts(
         self,
         channel_id: str,
@@ -286,7 +383,7 @@ class SlackMessageRetriever:
         for post in posts:
             message_list.append(
                 SlackMessageRetriever.convert_post_to_dict(
-                    channel_id=channel_id, post=post
+                    self, channel_id=channel_id, post=post
                 )
             )
             if "subtype" not in list(post.keys()) and "thread_ts" in list(post.keys()):
@@ -299,7 +396,7 @@ class SlackMessageRetriever:
                 for thread in threads:
                     message_list.append(
                         SlackMessageRetriever.convert_thread_to_dict(
-                            channel_id=channel_id, thread=thread
+                            self, channel_id=channel_id, thread=thread
                         )
                     )
         return message_list
