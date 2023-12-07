@@ -83,4 +83,6 @@ class MessageExtractor:
             if_exists="replace",
             schema=config.SCHEMA_CONVERSATION,
         )
-        self.bigquery_client.upsert_table()
+        self.bigquery_client.upsert_table(
+            target_table="slack_conversation_master", source_table="temp_upsert_table"
+        )
