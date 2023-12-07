@@ -30,7 +30,7 @@ def retry(tries: int, delay: int, backoff: int):
         @wraps(f)
         def f_retry(*args, **kwargs):
             mtries, mdelay = tries, delay
-            while tries > 1:
+            while mtries > 1:
                 try:
                     return f(*args, **kwargs)
                 except Exception as e:
@@ -357,7 +357,7 @@ class SlackMessageRetriever:
             "num_member": int(channel["num_members"]),
         }
 
-    @retry(tries=6, delay=10, backoff=10)
+    @retry(tries=6, delay=2, backoff=2)
     def fetch_and_process_posts(
         self,
         channel_id: str,
@@ -381,6 +381,7 @@ class SlackMessageRetriever:
         """
         message_list = []
         for post in posts:
+            time.sleep(0.5)
             message_list.append(
                 SlackMessageRetriever.convert_post_to_dict(
                     self, channel_id=channel_id, post=post
