@@ -106,7 +106,7 @@ class SlackMessageRetriever:
         """
         return self.app.client.chat_getPermalink(
             channel=channel_id, message_ts=message_ts
-        )
+        )["permalink"]
 
     def read_thread_from_slack(
         self,
@@ -135,7 +135,9 @@ class SlackMessageRetriever:
         )
         return thread["messages"]
 
-    def read_reactions_from_slack(self, channel_id: str, ts: str) -> List[Dict]:
+    def read_reactions_from_slack(
+        self, channel_id: str, ts: str, full: bool = True
+    ) -> List[Dict]:
         """
         슬랙 게시글/댓글의 이모지를 가져옵니다.
 
@@ -145,7 +147,8 @@ class SlackMessageRetriever:
             채널 Id입니다.
         ts : str
             이모지를 가져올 게시글/댓글의 Unixtime입니다.
-
+        full : bool
+            이모지를 full로 가져올지 결정
         Returns
         -------
         List[Dict]
@@ -155,8 +158,8 @@ class SlackMessageRetriever:
         return self.app.client.reactions_get(
             channel=channel_id,
             timestamp=ts,
-            full=True,
-        )
+            full=full,
+        )["message"]
 
     def read_users_from_slack(self) -> List[Dict]:
         """
@@ -182,7 +185,8 @@ class SlackMessageRetriever:
         """
         return self.app.client.conversations_list()["channels"]
 
-    def message_for_private(self, users: List, text: str) -> None:
+    @retry(tries=6, delay=2, backoff=2)
+    def message_for_private(self, user: str, text: str) -> None:
         """
         _summary_
 
@@ -191,21 +195,22 @@ class SlackMessageRetriever:
         None
             채널로 메시지를 보냅니다.
         """
-        messaged_users = []
-        for user in users:
-            try:
-                dm_channel_id = self.app.client.conversations_open(users=user)[
-                    "channel"
-                ]["id"]
-                self.app.client.chat_postMessage(channel=dm_channel_id, text=text)
-            except:
-                time.sleep(5)
-                dm_channel_id = self.app.client.conversations_open(users=user)[
-                    "channel"
-                ]["id"]
-                self.app.client.chat_postMessage(channel=dm_channel_id, text=text)
-            messaged_users.append(f"{user}")
-        print(messaged_users)
+        time.sleep(0.5)
+        dm_channel_id = self.app.client.conversations_open(users=user)["channel"]["id"]
+        self.app.client.chat_postMessage(channel=dm_channel_id, text=text)
+
+    @retry(tries=6, delay=2, backoff=2)
+    def message_for_channel(self, channel_id: str, text: str) -> None:
+        """
+        _summary_
+
+        Returns
+        -------
+        None
+            채널로 메시지를 보냅니다.
+        """
+        time.sleep(0.5)
+        self.app.client.chat_postMessage(channel=channel_id, text=text)
 
     def convert_post_to_dict(self, channel_id: str, post: Dict) -> Dict:
         """
@@ -224,7 +229,7 @@ class SlackMessageRetriever:
         """
 
         reaction_dict = self.read_reactions_from_slack(
-            channel_id=channel_id, ts=post["ts"]
+            channel_id=channel_id, ts=post["ts"], full=True
         )
 
         return {
@@ -248,11 +253,11 @@ class SlackMessageRetriever:
             "reactions": json.dumps(
                 [
                     {
-                        "name": reaction_dict["name"],
-                        "user_id": reaction_dict["users"],
-                        "count": reaction_dict["count"],
+                        "name": reactions["name"],
+                        "user_id": reactions["users"],
+                        "count": reactions["count"],
                     }
-                    for reaction_dict in post.get("reactions", [])
+                    for reactions in reaction_dict.get("reactions", [])
                 ],
                 ensure_ascii=False,
             ),
@@ -281,7 +286,7 @@ class SlackMessageRetriever:
         )
 
         reaction_dict = self.read_reactions_from_slack(
-            channel_id=channel_id, ts=thread["ts"]
+            channel_id=channel_id, ts=thread["ts"], full=True
         )
 
         return {
@@ -305,11 +310,11 @@ class SlackMessageRetriever:
             "reactions": json.dumps(
                 [
                     {
-                        "name": reaction_dict["name"],
-                        "user_id": reaction_dict["users"],
-                        "count": reaction_dict["count"],
+                        "name": reactions["name"],
+                        "user_id": reactions["users"],
+                        "count": reactions["count"],
                     }
-                    for reaction_dict in thread.get("reactions", [])
+                    for reactions in reaction_dict.get("reactions", [])
                 ],
                 ensure_ascii=False,
             ),
