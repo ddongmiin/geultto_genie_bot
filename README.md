@@ -10,6 +10,7 @@
 ![데이터야놀자 발표](./img/community_img.png)
 ![데이터야놀자 발표](./img/geultto_summary.png)
 * 데이터 반상회에서 발표했던 경험을 바탕으로 데이터야놀자에서도 발표를 진행하게 됐습니다.
+* [발표영상링크](https://www.youtube.com/watch?v=Uuy9BSoriag&t=306s&ab_channel=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%95%BC%EB%86%80%EC%9E%90)
 * [발표자료링크](https://drive.google.com/file/d/1n36-DOJ8Q6vv99ib3RKa9rt_p7vH9SVX/view?usp=sharing)
 * 주요 내용은 아래 두 가지입니다.
     * 글또 슬랙 데이터를 수집한 경험
