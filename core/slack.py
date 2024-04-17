@@ -172,9 +172,7 @@ class SlackMessageRetriever:
         """
         return self.app.client.users_list()["members"]
 
-    def read_channels_from_slack(
-        self,
-    ) -> List[Dict]:
+    def read_channels_from_slack(self, types: str = None) -> List[Dict]:
         """
         채널 리스트를 불러옵니다.
 
@@ -183,7 +181,7 @@ class SlackMessageRetriever:
         List[Dict]
             list dict 형태로 채널 리스트를 확인할 수 있습니다.
         """
-        return self.app.client.conversations_list()["channels"]
+        return self.app.client.conversations_list(types=types)["channels"]
 
     @retry(tries=6, delay=2, backoff=2)
     def message_for_private(self, user: str, text: str) -> None:
@@ -386,25 +384,28 @@ class SlackMessageRetriever:
         """
         message_list = []
         for post in posts:
-            time.sleep(0.5)
-            message_list.append(
-                SlackMessageRetriever.convert_post_to_dict(
-                    self, channel_id=channel_id, post=post
-                )
-            )
-            if "subtype" not in list(post.keys()) and "thread_ts" in list(post.keys()):
-                thread_ts = post["thread_ts"]
-                # 0번째 값은 게시글
-                threads = self.read_thread_from_slack(
-                    channel_id=channel_id, thread_ts=thread_ts
-                )[1:]
-                time.sleep(1.5)
-                for thread in threads:
-                    message_list.append(
-                        SlackMessageRetriever.convert_thread_to_dict(
-                            self, channel_id=channel_id, thread=thread
-                        )
+            if "user" in post.keys():
+                time.sleep(0.5)
+                message_list.append(
+                    SlackMessageRetriever.convert_post_to_dict(
+                        self, channel_id=channel_id, post=post
                     )
+                )
+                if "subtype" not in list(post.keys()) and "thread_ts" in list(
+                    post.keys()
+                ):
+                    thread_ts = post["thread_ts"]
+                    # 0번째 값은 게시글
+                    threads = self.read_thread_from_slack(
+                        channel_id=channel_id, thread_ts=thread_ts
+                    )[1:]
+                    time.sleep(1.5)
+                    for thread in threads:
+                        message_list.append(
+                            SlackMessageRetriever.convert_thread_to_dict(
+                                self, channel_id=channel_id, thread=thread
+                            )
+                        )
         return message_list
 
     @staticmethod

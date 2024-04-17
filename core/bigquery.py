@@ -188,8 +188,8 @@ class BigqueryProcessor:
             text = S.text,
             reactions = S.reactions
         WHEN NOT MATCHED THEN
-            INSERT (channel_id, message_type, post_id, user_id, createtime, tddate, text, reactions)
-            VALUES (channel_id, message_type, post_id, user_id, createtime, tddate, text, reactions)            
+            INSERT (channel_id, message_type, post_id, user_id, ts, createtime, tddate, text, permalink, reactions)
+            VALUES (channel_id, message_type, post_id, user_id, ts, createtime, tddate, text, permalink, reactions)            
         """
 
         query_job = self.client.query(qr)
