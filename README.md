@@ -11,6 +11,11 @@
 - 수집 범위를 확장하여
     - 글또 내 사용자 활동 로그(게시글, 쓰레드, 이모지)를 수집
     - 커뮤니티 활성화에 이용
+
+# Getting started
+- message_basic.py 에서 기본적인 슬랙bot 사용기능을 시험해볼 수 있습니다.
+- token을 관리자에게 받되 git 등 노출되지 않도록 유의합니다.(시스템 환경변수 등 활용)
+
 # ETL 프로세스
 - core폴더에 각 기능들이 정리되어 있고
   - batch폴더 아래의 slack_daily_message_extraction.py에서 각 기능들을 한 곳으로 모아
