@@ -17,10 +17,10 @@ USER_ID = ""  # 메시지를 보낼 대상의 Slack User ID
 
 
 #하기 두개의 인자는 스레드의 링크복사 URL에 정보가 저장되어있음
-URL = ''# 개인정보 이슈 삭제
-URL_LIST = URL.split('/')
-CHANNEL_ID = URL_LIST[4] #  채널 ID
-THREAD_TS = URL_LIST[5][1:-7] + '.' + URL_LIST[5][-7:] #   스레드 메시지의 timestamp
+# URL = ''# 개인정보 이슈 삭제
+# URL_LIST = URL.split('/')
+# CHANNEL_ID = URL_LIST[4] #  채널 ID
+# THREAD_TS = URL_LIST[5][1:-7] + '.' + URL_LIST[5][-7:] #   스레드 메시지의 timestamp
 
 # WebClient 초기화
 client = WebClient(token=SLACK_BOT_TOKEN)
